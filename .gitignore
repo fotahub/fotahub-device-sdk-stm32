@@ -1,0 +1,10 @@
+/.metadata
+/examples/*/.settings/stm32cubeide.project.prefs
+/examples/*/.mxproject
+/examples/*/Core/*
+/examples/*/Drivers
+/examples/*/LWIP
+/examples/*/MBEDTLS
+/examples/*/Middlewares
+/examples/*/Debug
+/examples/*/Release
