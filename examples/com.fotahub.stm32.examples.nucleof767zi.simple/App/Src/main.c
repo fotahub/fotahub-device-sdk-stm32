@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
   
   fotahub_init(DEMO_PRODUCT_ID, DEMO_PRODUCT_NAME, &STM32_FOTA_UPDATE_CLIENT_CONFIG);
   
-  xTaskCreate(&fotaUpdateTasks,"fotaUpdateTasks",FOTA_UPDATE_TASK_STACK_SIZE * 3,NULL,2,NULL);
+  xTaskCreate(&fotaUpdateTasks, "fotaUpdateTasks", FOTA_UPDATE_TASK_STACK_SIZE * 3, NULL, 2, NULL);
   
   ethernet_Enable();
   

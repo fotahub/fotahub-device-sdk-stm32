@@ -59,15 +59,15 @@ void uart_init(void)
   hUART.Init.OverSampling = UART_OVERSAMPLING_16;
   HAL_UART_Init(&hUART);
   
-  __HAL_UART_ENABLE_IT(&hUART,UART_IT_RXNE);
+  __HAL_UART_ENABLE_IT(&hUART, UART_IT_RXNE);
   HAL_NVIC_SetPriority(USART3_IRQn, 0, 1);
   HAL_NVIC_EnableIRQ(USART3_IRQn);
 }
 
 void USART3_IRQHandler(void)
 {
-  uint32_t flag = __HAL_UART_GET_FLAG(&hUART,UART_FLAG_RXNE);
-  uint32_t source = __HAL_UART_GET_IT_SOURCE(&hUART,UART_IT_RXNE);
+  uint32_t flag = __HAL_UART_GET_FLAG(&hUART, UART_FLAG_RXNE);
+  uint32_t source = __HAL_UART_GET_IT_SOURCE(&hUART, UART_IT_RXNE);
   if (flag != false && source != false) 
   {
     firmwareUpdateInfoReader_onCharacterReceived(((uint8_t)(((hUART.Instance->DR) & (0x00FFu)))));
@@ -82,7 +82,7 @@ int _write(int file, char const *ptr, int len)
   int32_t count = 0;
   for ( int32_t __i = 0 ; __i < len; __i++ )
   {
-    while (__HAL_UART_GET_FLAG(&hUART,UART_FLAG_TXE) != SET)
+    while (__HAL_UART_GET_FLAG(&hUART, UART_FLAG_TXE) != SET)
     {
     }
     hUART.Instance->DR = ((uint32_t)((*ptr++)));

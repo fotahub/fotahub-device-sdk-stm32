@@ -3,8 +3,8 @@ The FotaHub&reg; Device SDK for STM32&reg; enables developers to create firmware
 
 # Installation
 To use the FotaHub&reg; Device SDK for STM32&reg;, the following tools must be available on your laptop or computer:
-* The [STM32CubeIDE](https://www.st.com/en/development-tools/stm32cubeide.html) 1.5.1
-* The [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html) v2.6.0
+* The [STM32CubeIDE](https://www.st.com/en/development-tools/stm32cubeide.html) 1.7.0
+* The [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html) v2.8.0
 * The **FotaHub Eclipse Plugin** 0.1.0 or later
 
 # Getting started
@@ -17,3 +17,5 @@ View the **C API reference** for detailed information about the FotaHub&reg; cli
 
 # License
 Unless specifically indicated otherwise in a file included in this project, FotaHub&reg; Device SDK for STM32&reg; files are provided under the *Apache-2.0* license. See the [LICENSE](LICENSE) file for the full text of this license.
+
+The terms of the license attributed to this project do not alter any rights or obligations you may have under the licenses of any third-party software which is redistributed through the present project. Refer to the [NOTICE](NOTICE.md) file for detailed information regarding these aspects.
