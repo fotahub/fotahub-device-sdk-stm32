@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2021 FotaHub Inc. All rights reserved.
+ *  Copyright (C) 2022 FotaHub Inc. All rights reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use this file except in compliance with the License.
@@ -21,6 +21,10 @@
 #include <string.h>
 #include "mbedtls/error.h"
 
+extern void vPortFree(void *pv);
+
+extern void *pvPortMalloc(size_t size);
+
 MbedTLSNetwork_t *MbedTLSClientImpl_newMbedTLSNetwork(void *___id)
 {
   MbedTLSClientImpl__cdata_t *___cid = ((MbedTLSClientImpl__cdata_t *) ___id);
@@ -34,7 +38,7 @@ MbedTLSNetwork_t *MbedTLSClientImpl_newMbedTLSNetwork(void *___id)
       ___cid->networks__field[__i].eventFlags.dataSent = false;
       ___cid->networks__field[__i].eventFlags.disconnecting = false;
       ___cid->networks__field[__i].eventFlags.reserved = 0;
-      ___cid->networks__field[__i].pTLSDataParams = ((TLSDataParams_t *)(malloc(sizeof(TLSDataParams_t))));
+      ___cid->networks__field[__i].pTLSDataParams = ((TLSDataParams_t *)(pvPortMalloc(sizeof(TLSDataParams_t))));
       if (___cid->networks__field[__i].pTLSDataParams == NULL) 
       {
         printf("No more memory available\n");
@@ -77,7 +81,7 @@ void MbedTLSClientImpl_freeMbedTLSNetworkResources(MbedTLSNetwork_t *pNetwork, b
   
   if (pNetwork->pTLSDataParams != NULL) 
   {
-    free(pNetwork->pTLSDataParams);
+    vPortFree(pNetwork->pTLSDataParams);
     pNetwork->pTLSDataParams = NULL;
   }
 }
@@ -274,9 +278,6 @@ const void* MbedTLSClientImpl_socket_connect(SocketConnectionParameters_t *pConn
     return NULL;
   }
   
-  /* 
-   * Note: handshake steps during connection are performed in blocking mode
-   */
   mbedtls_ssl_set_bio(&(pTLSDataParams->ssl), &(pTLSDataParams->serverFD), &mbedtls_net_send, NULL, &mbedtls_net_recv_timeout);
   
   uint32_t readTimeout = (pConnParams->pSecureConnectionParams->readTimeout != SECURE_CONNECTION_READ_TIMEOUT_NONE) ? (pConnParams->pSecureConnectionParams->readTimeout) : (DEFAULT_READ_TIMEOUT);
@@ -287,7 +288,7 @@ const void* MbedTLSClientImpl_socket_connect(SocketConnectionParameters_t *pConn
    */
   while ((ret = mbedtls_ssl_handshake(&(pTLSDataParams->ssl))) != 0)
   {
-    if (((ret != MBEDTLS_ERR_SSL_WANT_READ) && (ret != MBEDTLS_ERR_SSL_WANT_WRITE))) 
+    if (((ret != MBEDTLS_ERR_SSL_WANT_READ) && (ret != MBEDTLS_ERR_SSL_WANT_WRITE) && (ret != MBEDTLS_ERR_SSL_TIMEOUT))) 
     {
       printf("Failed! mbedtls_ssl_handshake returned %li\n", ret);
       if (ret == MBEDTLS_ERR_X509_CERT_VERIFY_FAILED) 
@@ -298,17 +299,6 @@ const void* MbedTLSClientImpl_socket_connect(SocketConnectionParameters_t *pConn
       return NULL;
     }
   }
-  
-  /* 
-   * added setting of blocking mode TBC with all platforms
-   */
-  if ((ret = mbedtls_net_set_block(&(pTLSDataParams->serverFD))) != 0) 
-  {
-    printf("Failed! net_set_block() returned %li\n", ret);
-    MbedTLSClientImpl_deleteMbedTLSNetwork(pNetwork, true, ___cid);
-    return NULL;
-  }
-  mbedtls_ssl_set_bio(&(pTLSDataParams->ssl), &(pTLSDataParams->serverFD), &mbedtls_net_send, &mbedtls_net_recv, NULL);
   
   if (___cid->mutex__ops != NULL) 
   {
@@ -411,7 +401,7 @@ void MbedTLSClientImpl_socket_sendDatagram(const void* hSession, Datagram_t *pDa
   }
   else
   {
-    (*___cid->datagramPool__ops->delete)(pDatagram, ___cid->datagramPool__ops->__instance);
+    (*___cid->datagramPool__ops->deleteDatagram)(pDatagram, ___cid->datagramPool__ops->__instance);
     
     if (___cid->mutex__ops != NULL) 
     {
@@ -428,7 +418,7 @@ void MbedTLSClientImpl_socket_sendDatagram(const void* hSession, Datagram_t *pDa
 void MbedTLSClientImpl_socket_deleteDatagram(const void* hSession, Datagram_t *pDatagram, void *___id)
 {
   MbedTLSClientImpl__cdata_t *___cid = ((MbedTLSClientImpl__cdata_t *) ___id);
-  (*___cid->datagramPool__ops->delete)(pDatagram, ___cid->datagramPool__ops->__instance);
+  (*___cid->datagramPool__ops->deleteDatagram)(pDatagram, ___cid->datagramPool__ops->__instance);
 }
 
 void MbedTLSClientImpl_socket_disconnect(const void* hSession, void *___id)
@@ -477,6 +467,7 @@ void MbedTLSClientImpl_activity_run(void *___id)
         MbedTLSClientImpl_resetMbedTLSNetworkExtendedData(pNetwork, ___cid);
         continue;
       }
+      
       if (pNetwork->eventFlags.connected) 
       {
         if (___cid->mutex__ops != NULL) 
@@ -497,9 +488,9 @@ void MbedTLSClientImpl_activity_run(void *___id)
         }
         continue;
       }
+      
       if (pNetwork->eventFlags.dataSent) 
       {
-        
         if (___cid->mutex__ops != NULL) 
         {
           (*___cid->mutex__ops->lock)(___cid->mutex__ops->__instance);
@@ -518,15 +509,13 @@ void MbedTLSClientImpl_activity_run(void *___id)
         }
         continue;
       }
+      
       if (MbedTLSClientImpl_socket_isConnected(pNetwork, ___cid)) 
       {
         size_t maxFragmentLength = mbedtls_ssl_get_max_frag_len(&(pNetwork->pTLSDataParams->ssl));
         uint8_t fragment[maxFragmentLength];
-        /* 
-         * to be checked
-         */
-        int32_t ret = mbedtls_ssl_read(&(pNetwork->pTLSDataParams->ssl), fragment, maxFragmentLength);
         
+        int32_t ret = mbedtls_ssl_read(&(pNetwork->pTLSDataParams->ssl), fragment, maxFragmentLength);
         if (ret == MBEDTLS_ERR_SSL_WANT_READ || ret == MBEDTLS_ERR_SSL_WANT_WRITE || ret == MBEDTLS_ERR_SSL_TIMEOUT) 
         {
           continue;
@@ -561,6 +550,7 @@ void MbedTLSClientImpl_activity_run(void *___id)
           MbedTLSClientImpl_resetMbedTLSNetworkExtendedData(pNetwork, ___cid);
           continue;
         }
+        
         Datagram_t datagram;
         initDatagram(&datagram, fragment, ((size_t)(ret)));
         for ( uint8_t ___pc = 0 ; ___pc < MAX_CLIENT_SOCKET_HANDLER_COUNT; ___pc++ )

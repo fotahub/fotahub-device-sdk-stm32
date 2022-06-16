@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2021 FotaHub Inc. All rights reserved.
+ *  Copyright (C) 2022 FotaHub Inc. All rights reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use this file except in compliance with the License.
@@ -27,6 +27,10 @@ static char updateVersion[MAX_DEMO_FIRMWARE_UPDATE_VERSION_LENGTH + 1] = { 0 };
 
 static uint8_t *SinglePartitionAWSIoTThingShadowDataPlane_updateVerificationData = NULL;
 
+extern void vPortFree(void *pv);
+
+extern void *pvPortMalloc(size_t size);
+
 void fotahub_onProvideFirmwareUpdateVerificationInfo(FirmwareUpdateInfo_t const *pUpdateInfo, FOTAUpdateVerificationAlgorithm_t *pVerificationAlgorithm, uint8_t const  **ppVerificationData)
 {
   *pVerificationAlgorithm = DEMO_PRODUCT_FIRMWARE_UPDATE_VERIFICATION_ALGORITHM;
@@ -39,7 +43,7 @@ void SinglePartitionAWSIoTThingShadowIOHandlerImpl_init(void *___id)
   ___cid->firmwareUpdateVersionInfo__srdata.updateVersion = updateVersion;
   
   size_t updateVerificationDataSize = getVerificationDataSize(DEMO_PRODUCT_FIRMWARE_UPDATE_VERIFICATION_ALGORITHM);
-  SinglePartitionAWSIoTThingShadowDataPlane_updateVerificationData = ((uint8_t *)(malloc(updateVerificationDataSize)));
+  SinglePartitionAWSIoTThingShadowDataPlane_updateVerificationData = ((uint8_t *)(pvPortMalloc(updateVerificationDataSize)));
   memset(SinglePartitionAWSIoTThingShadowDataPlane_updateVerificationData, 0, updateVerificationDataSize);
 }
 

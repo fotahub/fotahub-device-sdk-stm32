@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2021 FotaHub Inc. All rights reserved.
+ *  Copyright (C) 2022 FotaHub Inc. All rights reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use this file except in compliance with the License.
@@ -26,8 +26,8 @@
 #include <string.h>
 
 enum FirmwareUpdateInfoParser__inevents {
-  FirmwareUpdateInfoParser_characterReceived__event,
-  FirmwareUpdateInfoParser_updateInfoPickedUp__event
+  FirmwareUpdateInfoParser_epsilon__event,
+  FirmwareUpdateInfoParser_characterReceived__event
 };
 typedef enum FirmwareUpdateInfoParser__inevents FirmwareUpdateInfoParser__inevents_t;
 
@@ -55,23 +55,24 @@ static uint8_t *updateVerificationData = NULL;
 
 static FirmwareUpdateInfoParser__data_t updateInfoParser;
 
+extern void vPortFree(void *pv);
+
+extern void *pvPortMalloc(size_t size);
+
 void firmwareUpdateInfoReader_init(void)
 {
   FirmwareUpdateInfoParser__init(&updateInfoParser);
-  
-  size_t updateVerificationDataSize = getVerificationDataSize(DEMO_PRODUCT_FIRMWARE_UPDATE_VERIFICATION_ALGORITHM);
-  updateVerificationData = ((uint8_t *)(malloc(updateVerificationDataSize)));
-  memset(updateVerificationData, 0, updateVerificationDataSize);
+  {
+    size_t updateVerificationDataSize = getVerificationDataSize(DEMO_PRODUCT_FIRMWARE_UPDATE_VERIFICATION_ALGORITHM);
+    updateVerificationData = ((uint8_t *)(pvPortMalloc(updateVerificationDataSize)));
+    memset(updateVerificationData, 0, updateVerificationDataSize);
+  }
+
 }
 
 void firmwareUpdateInfoReader_run(void)
 {
-  if ((updateInfoParser.__currentState == FirmwareUpdateInfoParser_yielding__state)) 
-  {
-    printf("Firmware update request towards version %s received\n", updateVersion);
-    fotaUpdateWorkflow_onFirmwareUpdateVersionChanged(updateVersion);
-    FirmwareUpdateInfoParser__execute(&updateInfoParser, FirmwareUpdateInfoParser_updateInfoPickedUp__event, NULL);
-  }
+  FirmwareUpdateInfoParser__execute(&updateInfoParser, FirmwareUpdateInfoParser_epsilon__event, NULL);
 }
 
 void firmwareUpdateInfoReader_onCharacterReceived(uint8_t character)
@@ -314,17 +315,22 @@ static bool FirmwareUpdateInfoParser__execute(FirmwareUpdateInfoParser__data_t *
     {
       switch (event)
       {
-        case FirmwareUpdateInfoParser_updateInfoPickedUp__event:
+        case FirmwareUpdateInfoParser_epsilon__event:
         {
           /* 
            * transition actions
            */
+          printf("Firmware update request towards version %s received\n", updateVersion);
+          fotaUpdateWorkflow_onFirmwareUpdateVersionChanged(updateVersion);
           instance->characterIdx = 0;
           
-          /* 
-           * enter target state
-           */
-          instance->__currentState = FirmwareUpdateInfoParser_receiving_receivingUpdateVersion__state;
+          if (instance->__currentState == FirmwareUpdateInfoParser_yielding__state) 
+          {
+            /* 
+             * enter target state
+             */
+            instance->__currentState = FirmwareUpdateInfoParser_receiving_receivingUpdateVersion__state;
+          }
           break;
         }
         default: {

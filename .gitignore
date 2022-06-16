@@ -1,5 +1,5 @@
 /.metadata
-/examples/*/.settings/stm32cubeide.project.prefs
+/examples/*/.settings
 /examples/*/.mxproject
 /examples/*/Core/*
 /examples/*/Drivers

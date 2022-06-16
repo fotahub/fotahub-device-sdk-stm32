@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2021 FotaHub Inc. All rights reserved.
+ *  Copyright (C) 2022 FotaHub Inc. All rights reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use this file except in compliance with the License.
@@ -21,6 +21,10 @@
 #include <string.h>
 #include "SafeMemoryCopy.h"
 
+extern void vPortFree(void *pv);
+
+extern void *pvPortMalloc(size_t size);
+
 Datagram_t *DynamicDatagramPoolImpl_datagramPool_newDatagram(size_t length, void *___id)
 {
   if (length == 0) 
@@ -31,7 +35,7 @@ Datagram_t *DynamicDatagramPoolImpl_datagramPool_newDatagram(size_t length, void
   /* 
    * Allocate and initialize new datagram
    */
-  Datagram_t *pDatagram = ((Datagram_t *)(malloc(sizeof(Datagram_t) + length)));
+  Datagram_t *pDatagram = ((Datagram_t *)(pvPortMalloc(sizeof(Datagram_t) + length)));
   if (pDatagram == NULL) 
   {
     printf("Out of memory\n");
@@ -47,7 +51,7 @@ Datagram_t *DynamicDatagramPoolImpl_datagramPool_newDatagram(size_t length, void
   return ((Datagram_t *)(pDatagram));
 }
 
-void DynamicDatagramPoolImpl_datagramPool_delete(Datagram_t *pDatagram, void *___id)
+void DynamicDatagramPoolImpl_datagramPool_deleteDatagram(Datagram_t *pDatagram, void *___id)
 {
   if (pDatagram == NULL) 
   {
@@ -56,7 +60,7 @@ void DynamicDatagramPoolImpl_datagramPool_delete(Datagram_t *pDatagram, void *__
   /* 
    * Release datagram
    */
-  free(pDatagram);
+  vPortFree(pDatagram);
 }
 
 Datagram_t *DynamicDatagramPoolImpl_datagramPool_resizeDatagram(Datagram_t *pDatagram, size_t newLength, void *___id)
@@ -132,6 +136,6 @@ Datagram_t *DynamicDatagramPoolImpl_datagramPool_resizeDatagram(Datagram_t *pDat
   /* 
    * Delete old datagram
    */
-  DynamicDatagramPoolImpl_datagramPool_delete(pDatagram, ___cid);
+  DynamicDatagramPoolImpl_datagramPool_deleteDatagram(pDatagram, ___cid);
   return pResizedDatagram;
 }
