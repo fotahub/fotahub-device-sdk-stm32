@@ -3,7 +3,7 @@ The FotaHub&reg; Device SDK for STM32&reg; enables developers to create firmware
 
 # Supported targets
 The FotaHub&reg; Device SDK for STM32&reg; can be used on STM32
-Nucleo&trade; development boards or any other kind of STM32&reg;-based board featuring an on-board Ethernet network interface. 
+Nucleo&trade; development boards or any other STM32&reg;-based hardware product that feature an on-board Ethernet network interface or a wireless Wi-Fi adapter. 
 
 # Installation
 To use the FotaHub&reg; Device SDK for STM32&reg;, the following tools must be available on your laptop or computer:
