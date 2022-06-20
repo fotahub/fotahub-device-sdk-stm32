@@ -2,6 +2,7 @@
 /examples/*/.settings
 /examples/*/.mxproject
 /examples/*/Core/*
+!/examples/*/Core/Startup
 /examples/*/Drivers
 /examples/*/LWIP
 /examples/*/MBEDTLS
