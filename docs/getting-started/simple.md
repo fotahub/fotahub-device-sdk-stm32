@@ -66,15 +66,15 @@ If not yet done so, either clone or download and uncompress the [FotaHub Device 
 #define DEMO_PRODUCT_FIRMWARE_UPDATE_VERIFICATION_ALGORITHM FOTA_UPDATE_VERIFICATION_ALGORITHM_SHA256
 ```
 
-6. Build the project (`Project` > `Build Project`).
+6. Set `Release` as active configuration for the project (`Project` > `Build Configurations` > `Set Active` > `2 Release`) and build it (`Project` > `Build Project`).
     
 7. Connect your board to your laptop or computer using a USB cable which you need to plug into the USB connector (`CN1`) on the ST-LINK debugger/programmer part at the upper end of the board. Next, connect your board to a router, repeater or switch using an Ethernet cable that you must plug into the RJ45 connector (`CN14`) at the lower end of the board. Finally, flash and run the firmware binary resulting from previous step on the board (`Run` > `Run`).
    
-8. Open the `Terminal` view (`Window` > `Show View` > `Other...` > `Terminal` > `Terminal`). Click on the `Open a Terminal` button in the view's toolbar, and choose  `Serial Terminal`. Select the serial port your board is connected to (if multiple serial ports are offered for selection read [here](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/establish-serial-connection.html) to find out which of them is applicable), and set the baudrate to `115200`. Click on `OK` to open the serial port, observe how the firmware starts up and verify whether it connects to the Wi-Fi network:
+8. Open the `Terminal` view (`Window` > `Show View` > `Other...` > `Terminal` > `Terminal`). Click on the `Open a Terminal` button in the view's toolbar, and choose  `Serial Terminal`. Select the serial port your board is connected to (if multiple serial ports are offered for selection read [here](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/establish-serial-connection.html#check-port-on-windows) to find out which of them is applicable when working under Windows), and set the baudrate to `115200`. Click on `OK` to open the serial port. Then, press the reset button (`B2`) in the lower right corner of your board, observe how the firmware starts up and verify whether it connects to your local network:
 
-![](simple-1.png "Start of initial firmware version")
+![](simple-2.png "Start of initial firmware version")
 
-<p style="margin-left: 2em">Also have a look at the red LED next to the USB port on your board (GPIO #13). It should blink with a period of approx. 1 s.</p> 
+<p style="margin-left: 2em">Also have a look at the green LED (<code>LD1</code>) at the upper end of the main part of your board. It should blink with a period of approx. 1 s.</p> 
 
 ### Create and upload a new firmware version to FotaHub
 
@@ -84,26 +84,26 @@ If not yet done so, either clone or download and uncompress the [FotaHub Device 
 #define DEMO_PRODUCT_FIRMWARE_VERSION "1.1"
 ```
 
-2. *Optional:* Make another change in your firmware, e.g., increase the blink frequency of the red LED on your board by going to the `Configuration.h` file in the `App/Inc` folder and decreasing the `BLINK_PERIOD` constant:
+2. *Optional:* Make another change in your firmware, e.g., increase the blink frequency of the green LED (`LD1`) on your board by going to the `Configuration.h` file in the `App/Inc` folder and decreasing the `BLINK_PERIOD` constant:
 
 ```c
 #define BLINK_PERIOD 250
 ```
 
-3. Rebuild the project (`Project` > `Build Project`). Locate the resulting new firmware binary file named `com.fotahub.stm32.examples.<board-name>.simple.elf` in the `Binaries` folder of your project (using the `Project Explorer` view).
+3. Make sure that `Release` is still set as active configuration for the project (`Project` > `Build Configurations` > `Set Active` > `2 Release`) and rebuild it (`Project` > `Build Project`). Locate the resulting new firmware binary file named `com.fotahub.stm32.examples.<board-name>.simple.elf` in the `Binaries` folder of your project (using the `Project Explorer` view).
    
 > &#x1F6C8; You can locate the new firmware binary file also in your file system explorer by using the corresponding context menu action (`Show In` > `System Explorer`). This can come quite handy in the subsequent steps. 
 
-3. Upload the new binary (`com.fotahub.stm32.examples.<board-name>.simple.elf`) as firmware version `1.1` to your FotaHub product as explained [here](../fotahub/upload-firmware.md).
+4. Upload the new binary (`com.fotahub.stm32.examples.<board-name>.simple.elf`) as firmware version `1.1` to your FotaHub product as explained [here](../fotahub/upload-firmware.md).
 
 ### Make your first firmare over-the-air update 
 
-1. Go back to the `Terminal` view showing the execution status of your board running the initial firmware version. Click on the `Toggle Command Input Field` button in the view's toolbar, and enter the new firmware version followed by a ':' separator, the checksum or signature of the same (see `Products` > `{{Your FotaHub product}}` > `Details` > `{{New firmware version}}` at [Fotahub](https://fotahub.com)), and a terminating line break in the text field or dialog provided for sending data over the opened serial port (`Connection` > `Send String...` in CoolTerm):
+1. Go back to the `Terminal` view showing the execution status of your board running the initial firmware version. Click on the `Toggle Command Input Field` button in the view's toolbar. A text field enabling you to enter and send data over the opened serial port appears at the lower end of the `Termianl` view. Enter the new firmware version followed by a ':' separator, the checksum or signature of the same (see `Products` > `{{Your FotaHub product}}` > `Details` > `{{New firmware version}}` at [Fotahub](https://fotahub.com)):
 
-![](simple-2.png "Trigger of FOTA update") 
+![](simple-3.png "Trigger of FOTA update") 
 
-2. Submit the firmware update info string to your board (`Send` button in CoolTerm). This will trigger the firmware over-the-air update procedure. Upon successful completion, the board will be restarted with the new firmware version downloaded from FotaHub. To verify that, check the firmware version in the banner showing up in the serial monitor output:
+2. Submit the firmware update info string to your board by hitting the `ENTER` key. This will trigger the firmware over-the-air update procedure. Upon successful completion, the board will be restarted with the new firmware version downloaded from FotaHub. To verify that, check the firmware version in the banner showing up in the `Terminal` view output:
 
-![](simple-3.png "Execution of FOTA update") 
+![](simple-4.png "Execution of FOTA update") 
 
-<p style="margin-left: 2em">In case that the new firmware version includes the change wrt to the blink frequency of the red LED on your board as mentioned above, you should also see that the latter is blinking significantly faster now.</p>
+<p style="margin-left: 2em">In case that the new firmware version includes the change wrt to the blink frequency of the green LED (<code>LD1</code>) on your board as mentioned above, you should also see that the latter is blinking significantly faster now.</p>

@@ -191,7 +191,7 @@ static bool EthernetEngine__execute(EthernetEngine__data_t *instance, EthernetEn
            */
           controlData.dhcpRetryCount = 0;
           controlData.currentStatus = ETHERNET_STATUS_GOT_IP;
-          printf("Got IP address %lu.%lu.%lu.%lu\n", (controlData.networkInterface.ip_addr.addr & 0xffu), (controlData.networkInterface.ip_addr.addr >> 8) & 0xffu, (controlData.networkInterface.ip_addr.addr >> 16) & 0xffu, (controlData.networkInterface.ip_addr.addr >> 24) & 0xffu);
+          printf("Got IP address %lu.%lu.%lu.%lu\r\n", (controlData.networkInterface.ip_addr.addr & 0xffu), (controlData.networkInterface.ip_addr.addr >> 8) & 0xffu, (controlData.networkInterface.ip_addr.addr >> 16) & 0xffu, (controlData.networkInterface.ip_addr.addr >> 24) & 0xffu);
           
           /* 
            * enter target state

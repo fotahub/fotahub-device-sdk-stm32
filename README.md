@@ -7,12 +7,11 @@ Nucleo&trade; development boards or any other STM32&reg;-based hardware product 
 
 # Installation
 To use the FotaHub&reg; Device SDK for STM32&reg;, the following tools must be available on your laptop or computer:
-* The [STM32CubeIDE 1.9.0](https://www.st.com/en/development-tools/stm32cubeide.html) or later (based on Eclipse)
+* The [STM32CubeIDE 1.10.0](https://www.st.com/en/development-tools/stm32cubeide.html) or later (based on Eclipse)
 * The [STM32CubeProg 2.10.0](https://www.st.com/en/development-tools/stm32cubeprog.html) or later
-* The [ST-LINK server 2.1.0](https://www.st.com/en/development-tools/st-link-server.html) or later
 * The [FotaHub Eclipse Plugin 0.1.0](https://marketplace.eclipse.org/content/fotahub-eclipse-plugin) or later  
   [![Drag to your running STM32CubeIDE workspace](https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.svg)](http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=5347433 "Drag to your running STM32CubeIDE workspace")
-* The [TM Terminal 10.5.0](https://marketplace.eclipse.org/content/tm-terminal) Eclipse plugin or later  
+* The [TM Terminal 10.6.0](https://marketplace.eclipse.org/content/tm-terminal) Eclipse plugin or later  
 [![Drag to your running STM32CubeIDE workspace](https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.svg)](http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1687099 "Drag to your running STM32CubeIDE workspace")  
 Be sure to select (at least) both the required **TM Terminal** base feature as well as the optional **TM Terminal Serial Connector Extensions** feature when prompted to do so during the installation procedure
 

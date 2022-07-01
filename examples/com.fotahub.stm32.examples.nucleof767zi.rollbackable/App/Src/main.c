@@ -40,9 +40,9 @@ int main(int argc, char *argv[])
   ethernet_Init();
   blink_init(BLINK_PERIOD);
   
-  printf("\n--------------------------------------------------------------------------\n");
-  printf("Running %s %s firmware\n", DEMO_PRODUCT_NAME, DEMO_PRODUCT_FIRMWARE_VERSION);
-  printf("--------------------------------------------------------------------------\n\n");
+  printf("\r\n--------------------------------------------------------------------------\r\n");
+  printf("Running %s %s firmware\r\n", DEMO_PRODUCT_NAME, DEMO_PRODUCT_FIRMWARE_VERSION);
+  printf("--------------------------------------------------------------------------\r\n\r\n");
   
   firmwareUpdateInfoReader_init();
   fotaUpdateWorkflow_init();
