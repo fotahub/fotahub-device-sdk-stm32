@@ -40,6 +40,10 @@ Create a FotaHub product that represents your board in FotaHub as explained [her
 
 If not yet done so, either clone or download and uncompress the [FotaHub Device SDK for STM32](https://github.com/fotahub/fotahub-device-sdk-stm32) to a location of your choice on your machine. 
 
+### Prepare your board to receive firmare over-the-air updates
+
+To make sure that the firmware over-the-air updates being applied to your board work as intended, it is necessary to tweak the boot sequence/options of your board as explained [here](../stm32/boot-sequence.md).
+
 ### Create and run initial firmware version
 
 1. Start the STM32CubeIDE and select a directory of your choice as workspace. Close the `Information Center` page that shows up when you start the STM32CubeIDE for the first time. Be sure that the required plugins as described [here](../fotahub/create-product.md) are installed.
@@ -68,7 +72,7 @@ If not yet done so, either clone or download and uncompress the [FotaHub Device 
 
 6. Set `Release` as active configuration for the project (`Project` > `Build Configurations` > `Set Active` > `2 Release`) and build it (`Project` > `Build Project`).
     
-7. Connect your board to your laptop or computer using a USB cable which you need to plug into the USB connector (`CN1`) on the ST-LINK debugger/programmer part at the upper end of the board. Next, connect your board to a router, repeater or switch using an Ethernet cable that you must plug into the RJ45 connector (`CN14`) at the lower end of the board. Finally, flash and run the firmware binary resulting from previous step on the board (`Run` > `Run`).
+7. Make sure that your board is still connected to your laptop or computer with a USB cable as indicated [here](../stm32/boot-sequence.md). Connect your board to a router, repeater or switch using an Ethernet cable that you must plug into the RJ45 connector (`CN14`) at the lower end of the board. Flash and run the firmware binary resulting from previous step on the board (`Run` > `Run`).
    
 8. Open the `Terminal` view (`Window` > `Show View` > `Other...` > `Terminal` > `Terminal`). Click on the `Open a Terminal` button in the view's toolbar, and choose  `Serial Terminal`. Select the serial port your board is connected to (if multiple serial ports are offered for selection read [here](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/establish-serial-connection.html#check-port-on-windows) to find out which of them is applicable when working under Windows), and set the baudrate to `115200`. Click on `OK` to open the serial port. Then, press the reset button (`B2`) in the lower right corner of your board, observe how the firmware starts up and verify whether it connects to your local network:
 
@@ -90,11 +94,11 @@ If not yet done so, either clone or download and uncompress the [FotaHub Device 
     #define BLINK_PERIOD 250
     ```
 
-3. Make sure that `Release` is still set as active configuration for the project (`Project` > `Build Configurations` > `Set Active` > `2 Release`) and rebuild it (`Project` > `Build Project`). Locate the resulting new firmware binary file named `com.fotahub.stm32.examples.<board-name>.simple.elf` in the `Binaries` folder of your project (using the `Project Explorer` view).
+3. Make sure that `Release` is still set as active configuration for the project (`Project` > `Build Configurations` > `Set Active` > `2 Release`) and rebuild it (`Project` > `Build Project`). Locate the resulting new firmware binary file named `com.fotahub.stm32.examples.<board-name>.simple.bin` in the `Release` folder of your project (using the `Project Explorer` view).
    
     > &#x1F6C8; You can locate the new firmware binary file also in your file system explorer by using the corresponding context menu action (`Show In` > `System Explorer`). This can come quite handy in the subsequent steps. 
 
-4. Upload the new binary (`com.fotahub.stm32.examples.<board-name>.simple.elf`) as firmware version `1.1` to your FotaHub product as explained [here](../fotahub/upload-firmware.md).
+4. Upload the new binary (`com.fotahub.stm32.examples.<board-name>.simple.bin`) as firmware version `1.1` to your FotaHub product as explained [here](../fotahub/upload-firmware.md).
 
 ### Make your first firmare over-the-air update 
 
