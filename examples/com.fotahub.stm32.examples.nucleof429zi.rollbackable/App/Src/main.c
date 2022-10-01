@@ -30,7 +30,7 @@
 #include "SystemClockConfig.h"
 #include <stm32f4xx_hal.h>
 
-static void fotaUpdateTasks(void *args);
+static void updateTask(void *pvParameters);
 
 int main(int argc, char *argv[])
 {
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
   
   fotahub_init(DEMO_PRODUCT_ID, DEMO_PRODUCT_NAME, &STM32_FOTA_UPDATE_CLIENT_CONFIG);
   
-  xTaskCreate(&fotaUpdateTasks, "fotaUpdateTasks", FOTA_UPDATE_TASK_STACK_SIZE * 3, NULL, 2, NULL);
+  xTaskCreate(&updateTask, "updateTask", FOTA_UPDATE_TASK_STACK_SIZE * 3, NULL, 2, NULL);
   
   ethernet_Enable();
   
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
   return 0;
 }
 
-static void fotaUpdateTasks(void *args)
+static void updateTask(void *pvParameters)
 {
   while (true)
   {
