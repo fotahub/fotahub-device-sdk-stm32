@@ -9,3 +9,9 @@
 3. Go to the option byte settings panel by clicking on the `OB` icon figuring on the left side of the tool window. Uncheck the `BFB2` setting and click on `Apply`:
 
     ![](boot-sequence-2.png "Disabling of BFB2 setting")
+
+4. Click on the `Disconnect` button in the upper right area of the tool window:
+
+    ![](boot-sequence-3.png "Disconnection from STM32 board")
+
+    Leave your board connected to your laptop or computer however.
